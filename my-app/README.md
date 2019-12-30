@@ -1,5 +1,7 @@
 To build this, I followed the [official react tutorial](https://reactjs.org/tutorial/tutorial.html)
 
+auto generated README:
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
