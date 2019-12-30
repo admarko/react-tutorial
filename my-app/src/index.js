@@ -11,22 +11,34 @@ function Square(props) {
 }
 
 class Board extends React.Component {
-  renderSquare(i) {
+  renderSquare(i, toColor) {
     return (
       <Square
         key={i}
-        value={this.props.squares[i]}
+        value={
+          <span style={toColor ? { color: "red" } : { color: "black" }}>
+            {this.props.squares[i]}
+          </span>
+        }
         onClick={() => this.props.onClick(i)}
       />
     );
   }
 
   createBoard() {
+    let winningMoves = this.props.winningMoves;
     let board = [];
     for (let i = 0; i < 3; i++) {
       let row = [];
       for (let j = 0; j < 3; j++) {
-        row.push(this.renderSquare(i * 3 + j));
+        let squareNumber = i * 3 + j;
+        if (!winningMoves) {
+          row.push(this.renderSquare(squareNumber, false));
+        } else {
+          row.push(
+            this.renderSquare(squareNumber, winningMoves.includes(squareNumber))
+          );
+        }
       }
       board.push(
         <div className="board-row" key={"row" + i}>
@@ -135,8 +147,10 @@ class Game extends React.Component {
     });
 
     let status;
+    let winningMoves;
     if (winner) {
-      status = "Winner: " + winner;
+      status = "Winner: " + winner[0];
+      winningMoves = winner[1];
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
@@ -144,7 +158,11 @@ class Game extends React.Component {
     return (
       <div className="game">
         <div className="game-board">
-          <Board squares={current.squares} onClick={i => this.handleClick(i)} />
+          <Board
+            squares={current.squares}
+            winningMoves={winningMoves}
+            onClick={i => this.handleClick(i)}
+          />
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -172,7 +190,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [squares[a], lines[i]];
     }
   }
   return null;
