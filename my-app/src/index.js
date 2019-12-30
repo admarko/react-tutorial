@@ -105,6 +105,7 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
+    const tie = isTie(current.squares);
 
     const moves = history.map((step, move) => {
       let lastMove = -1;
@@ -151,6 +152,8 @@ class Game extends React.Component {
     if (winner) {
       status = "Winner: " + winner[0];
       winningMoves = winner[1];
+    } else if (tie) {
+      status = "TIE!";
     } else {
       status = "Next player: " + (this.state.xIsNext ? "X" : "O");
     }
@@ -174,6 +177,15 @@ class Game extends React.Component {
       </div>
     );
   }
+}
+
+function isTie(squares) {
+  for (let i = 0; i < 9; i++) {
+    if (squares[i] === null) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function calculateWinner(squares) {
